@@ -1,0 +1,2 @@
+E:/Foodnanny/new/foodnanny-customer-app/android/app/.cxx/Debug/272n5x2n/x86_64/CMakeFiles/edit_cache.dir
+E:/Foodnanny/new/foodnanny-customer-app/android/app/.cxx/Debug/272n5x2n/x86_64/CMakeFiles/rebuild_cache.dir

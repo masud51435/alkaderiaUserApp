@@ -1,0 +1,2 @@
+D:/iniLabs/current_projects/ongoing-project/foodnanny-customer-app/android/app/.cxx/Debug/d4g20x94/x86/CMakeFiles/edit_cache.dir
+D:/iniLabs/current_projects/ongoing-project/foodnanny-customer-app/android/app/.cxx/Debug/d4g20x94/x86/CMakeFiles/rebuild_cache.dir
