@@ -11,6 +11,7 @@ class TextWidget extends StatelessWidget {
     this.maxLines,
     this.overflow,
     this.textAlign,
+    this.decoration,
   });
   final String text;
   final Color? color;
@@ -19,6 +20,7 @@ class TextWidget extends StatelessWidget {
   final int? maxLines;
   final TextOverflow? overflow;
   final TextAlign? textAlign;
+  final TextDecoration? decoration;
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +30,7 @@ class TextWidget extends StatelessWidget {
         color: color,
         fontWeight: fontWeight,
         fontSize: fontSize,
-
+        decoration: decoration,
       ),
       maxLines: maxLines,
       overflow: overflow,

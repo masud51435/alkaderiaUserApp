@@ -1,11 +1,10 @@
 import 'package:flutter/widgets.dart';
 import 'package:foodnanny/app/features/home/controller/home_controller.dart';
 import 'package:foodnanny/data/model/restuarant_model.dart';
-import 'package:foodnanny/data/repository/all_restaurant_repo.dart';
 import 'package:get/get.dart';
 
 class ExploreController extends GetxController {
-  final AllRestuarantRepo _allRestuarantRepo = AllRestuarantRepo();
+
   final searchResultList = <Restaurant>[].obs;
   final restaurantLoader = false.obs;
   TextEditingController searchController = TextEditingController();
@@ -17,23 +16,23 @@ class ExploreController extends GetxController {
     required String query,
   }) async {
     restaurantLoader(true);
-    final data = await _allRestuarantRepo.getAllRestuarantBySearch(
-      lat: lat,
-      long: long,
-      deliveryOrderType: deliveryOrderType,
-      query: query,
-    );
+    // final data = await _allRestuarantRepo.getAllRestuarantBySearch(
+    //   lat: lat,
+    //   long: long,
+    //   deliveryOrderType: deliveryOrderType,
+    //   query: query,
+    // );
     restaurantLoader(false);
-    data.fold(
-      (error) {
-        restaurantLoader(false);
-      },
-      (data) {
-        restaurantLoader(false);
-        searchResultList.value = data.data!;
-        updateSearchResultWithOfferAmount();
-      },
-    );
+    // data.fold(
+    //   (error) {
+    //     restaurantLoader(false);
+    //   },
+    //   (data) {
+    //     restaurantLoader(false);
+    //     searchResultList.value = data.data!;
+    //     updateSearchResultWithOfferAmount();
+    //   },
+    // );
   }
 
   void updateSearchResultWithOfferAmount() {

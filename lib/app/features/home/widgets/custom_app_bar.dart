@@ -1,15 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:foodnanny/app/features/address/controller/address_controller.dart';
-import 'package:foodnanny/app/features/cart/controller/cart_controller.dart';
-import 'package:foodnanny/app/features/home/controller/home_controller.dart';
-import 'package:foodnanny/main.dart';
-import 'package:get/get.dart';
 import '../../../../config/theme/app_color.dart';
 import '../../../../utils/svg_icon.dart';
-import '../../../../widgets/normal_text.dart';
-import '../../../../widgets/text_widget.dart';
 
 class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
   const CustomAppBar({super.key, this.onTap, required this.pickedAddress});
@@ -24,18 +17,6 @@ class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
 }
 
 class _CustomAppBarState extends State<CustomAppBar> {
-  final addressController = Get.find<AddressController>();
-  final homeController = Get.find<HomeController>();
-  bool _isDeliveryApiCalled = false;
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      addressController.selectedHomeAddress.value = box.read('pickAddress');
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -54,171 +35,14 @@ class _CustomAppBarState extends State<CustomAppBar> {
           ],
         ),
         child: Padding(
-          padding: EdgeInsets.only(left: 16.w, right: 16.w),
+          padding: EdgeInsets.symmetric(horizontal: 16.w),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              GestureDetector(
-                onTap: widget.onTap,
-                child: Row(
-                  children: [
-                    SvgPicture.asset(
-                      SvgIcon.location,
-                      height: 16.h,
-                      width: 16.w,
-                      colorFilter: ColorFilter.mode(
-                        AppColor.primaryColor,
-                        BlendMode.srcIn,
-                      ),
-                    ),
-                    SizedBox(width: 4.w),
-                    box.read("pickAddress") != null
-                        ? Obx(
-                            () => TextWidget(
-                              text: addressController
-                                  .selectedHomeAddress
-                                  .value
-                                  .characters
-                                  .take(13)
-                                  .toString(),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          )
-                        : const NormalText(text: "..."),
-
-                    SizedBox(width: 4.w),
-                    SvgPicture.asset(
-                      SvgIcon.arrowDown,
-                      height: 16.h,
-                      width: 16.w,
-                      colorFilter: ColorFilter.mode(
-                        AppColor.primaryColor,
-                        BlendMode.srcIn,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Obx(
-                () => Container(
-                  height: 36.h,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(16.r),
-                    border: Border.all(color: AppColor.borderColor),
-                  ),
-                  child: Row(
-                    children: [
-                      GestureDetector(
-                        onTap: () async {
-                          Get.find<CartController>().isDeliver.value = true;
-
-                          if (!_isDeliveryApiCalled) {
-                            _isDeliveryApiCalled = true;
-                            Future.wait([
-                              homeController.getAllRestuarantByLatLong(
-                                lat: box.read('pickedLat'),
-                                long: box.read('pickedLong'),
-                                deliveryOrderType: "5",
-                              ),
-                              homeController.getSingleOfferRestaurants(
-                                lat: box.read('pickedLat'),
-                                long: box.read('pickedLong'),
-                                deliveryOrderType: "5",
-                              ),
-                              homeController.getCampaignsAndOffer(
-                                lat: box.read('pickedLat'),
-                                long: box.read('pickedLong'),
-                                deliveryOrderType: "5",
-                              ),
-                            ]);
-                          }
-                        },
-                        child: Padding(
-                          padding: EdgeInsets.all(3.r),
-                          child: Container(
-                            height: 30.h,
-                            width: 69.w,
-                            decoration: BoxDecoration(
-                              color:
-                                  Get.find<CartController>().isDeliver.value ==
-                                      true
-                                  ? AppColor.primaryColor
-                                  : AppColor.whiteColor,
-                              borderRadius: BorderRadius.circular(16.r),
-                            ),
-                            child: Center(
-                              child: NormalText(
-                                text: "DELIVERY".tr,
-                                color:
-                                    Get.find<CartController>()
-                                            .isDeliver
-                                            .value ==
-                                        true
-                                    ? AppColor.whiteColor
-                                    : AppColor.black100,
-                                fontSize: 14.sp,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: () async {
-                          Get.find<CartController>().isDeliver.value = false;
-
-                          _isDeliveryApiCalled = false;
-
-                          Future.wait([
-                            homeController.getAllRestuarantByLatLong(
-                              lat: box.read('pickedLat'),
-                              long: box.read('pickedLong'),
-                              deliveryOrderType: "10",
-                            ),
-                            homeController.getSingleOfferRestaurants(
-                              lat: box.read('pickedLat'),
-                              long: box.read('pickedLong'),
-                              deliveryOrderType: "10",
-                            ),
-                            homeController.getCampaignsAndOffer(
-                              lat: box.read('pickedLat'),
-                              long: box.read('pickedLong'),
-                              deliveryOrderType: "10",
-                            ),
-                          ]);
-                        },
-                        child: Padding(
-                          padding: EdgeInsets.all(3.r),
-                          child: Container(
-                            height: 30.h,
-                            width: 69.w,
-                            decoration: BoxDecoration(
-                              color:
-                                  Get.find<CartController>().isDeliver.value ==
-                                      false
-                                  ? AppColor.primaryColor
-                                  : AppColor.whiteColor,
-                              borderRadius: BorderRadius.circular(16.r),
-                            ),
-                            child: Center(
-                              child: NormalText(
-                                text: "TAKEAWAY".tr,
-                                fontSize: 14.sp,
-                                color:
-                                    Get.find<CartController>()
-                                            .isDeliver
-                                            .value ==
-                                        false
-                                    ? AppColor.whiteColor
-                                    : AppColor.black100,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+              SvgPicture.asset(
+                SvgIcon.logo,
+                height: 28.h,
+                width: 115.w,
+                fit: BoxFit.contain,
               ),
             ],
           ),

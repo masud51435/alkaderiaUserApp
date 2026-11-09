@@ -19,6 +19,7 @@ class ApiList {
   static const language = "$baseUrl/api/frontend/language";
   static const pages = "$baseUrl/api/frontend/page";
   static const setting = "$baseUrl/api/frontend/setting";
+  static const home = "$baseUrl/api/frontend/home";
   static const blogPosts = "$baseUrl/api/frontend/blog-posts";
   static String blogDetails({required String slug}) =>
       "$baseUrl/api/frontend/blog-posts/$slug";

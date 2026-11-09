@@ -2,13 +2,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:foodnanny/app/features/address/controller/address_controller.dart';
 import 'package:foodnanny/app/features/bottom_navbar/views/bottom_navigation.dart';
-import 'package:foodnanny/app/features/search_location/view/initial_location_view.dart';
 import 'package:foodnanny/config/theme/app_color.dart';
 import 'package:foodnanny/main.dart';
-import 'package:foodnanny/utils/svg_icon.dart';
 import 'package:get/get.dart';
 
 import '../../../../utils/images.dart';
@@ -28,11 +25,8 @@ class _SplashScreenState extends State<SplashScreen> {
     // addressController.getCurrentLocation();
 
     Timer(const Duration(seconds: 2), () {
-      Get.offAll(
-        () => box.read("isConfirmed") == true
-            ? const BottomNavigationScreen()
-            : const InitialLocationView(),
-      );
+      box.write("isConfirmed", true);
+      Get.offAll(() => const BottomNavigationScreen());
     });
 
     super.initState();
