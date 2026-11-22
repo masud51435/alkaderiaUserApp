@@ -1,12 +1,16 @@
 import 'package:flutter/foundation.dart';
 import 'package:foodnanny/app/features/home/model/home_response_model.dart' as home_model;
+import 'package:foodnanny/app/features/home/model/restaurant_menu_model.dart';
 import 'package:foodnanny/data/repository/home_repo.dart';
+import 'package:foodnanny/utils/api_list.dart';
 import 'package:get/get.dart';
 
 class HomeController extends GetxController {
   final HomeRepo _homeRepo = HomeRepo();
   final homeResponseData = home_model.HomeResponseData().obs;
+  final restuarantMenuModel = ResturantMenuModel().obs;
   final homeLoader = false.obs;
+  final menuRestaurantLoader = false.obs;
 
   // Compatibility stubs for legacy widgets/screens referencing old home controller methods/properties
   final restuarantModel = Rx<dynamic>(null);
@@ -89,5 +93,23 @@ class HomeController extends GetxController {
     } finally {
       homeLoader.value = false;
     }
+  }
+
+  Future<void> getMenuData({String? endpoint}) async {
+    try {
+      menuRestaurantLoader.value = true;
+      final response = await _homeRepo.getMenuData(endpoint);
+      if (response != null && response.statusCode == 200) {
+        restuarantMenuModel.value = ResturantMenuModel.fromJson(response.data);
+      }
+    } catch (e) {
+      debugPrint('Error fetching menu data: $e');
+    } finally {
+      menuRestaurantLoader.value = false;
+    }
+  }
+
+  Future<void> getMenuRestaurant() async {
+    return getMenuData(endpoint: ApiList.menuRestaurant);
   }
 }

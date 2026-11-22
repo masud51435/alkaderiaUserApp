@@ -8,7 +8,7 @@
     <uses-permission android:name="android.hardware.location.gps" />
 
     <application
-        android:label="Foodnanny - Customer App"
+        android:label="Alkaderia"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
         android:enableOnBackInvokedCallback="true"

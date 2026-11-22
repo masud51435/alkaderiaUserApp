@@ -1,5 +1,5 @@
 class ApiList {
-  static const baseUrl = "https://alkaderia.w3informer.com";
+  static const baseUrl = "https://hotel.w3informer.com";
   static const licenseKey = "g5r01mt9-n6s9-21k7-4404-z094u39376n546531";
   static const mapKey = "AIzaSyBaY6jg8aoeQ1sQLP0xUdhXqAiMIa4HYcU";
   static const login = "$baseUrl/api/auth/login";
@@ -20,6 +20,9 @@ class ApiList {
   static const pages = "$baseUrl/api/frontend/page";
   static const setting = "$baseUrl/api/frontend/setting";
   static const home = "$baseUrl/api/frontend/home";
+  static const menuRestaurant = "$baseUrl/api/frontend/menu/restaurant";
+  static const menuExpress = "$baseUrl/api/frontend/menu/express";
+  static const menuCafe = "$baseUrl/api/frontend/menu/cafe";
   static const blogPosts = "$baseUrl/api/frontend/blog-posts";
   static String blogDetails({required String slug}) =>
       "$baseUrl/api/frontend/blog-posts/$slug";

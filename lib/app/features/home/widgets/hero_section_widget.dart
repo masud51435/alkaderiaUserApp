@@ -110,31 +110,31 @@ class HeroSectionWidget extends StatelessWidget {
               }).toList(),
             ),
           ],
-          if (section.imageUrl != null && section.imageUrl!.isNotEmpty) ...[
-            SizedBox(height: 28.h),
-            Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20.r),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.06),
-                    blurRadius: 15,
-                    offset: const Offset(0, 8),
-                  ),
-                ],
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(20.r),
-                child: Image.network(
-                  section.imageUrl!,
-                  height: 240.h,
-                  width: double.infinity,
-                  fit: BoxFit.cover,
-                  errorBuilder: (c, e, s) => const SizedBox.shrink(),
-                ),
-              ),
-            ),
-          ],
+          // if (section.imageUrl != null && section.imageUrl!.isNotEmpty) ...[
+          //   SizedBox(height: 28.h),
+          //   Container(
+          //     decoration: BoxDecoration(
+          //       borderRadius: BorderRadius.circular(20.r),
+          //       boxShadow: [
+          //         BoxShadow(
+          //           color: Colors.black.withValues(alpha: 0.06),
+          //           blurRadius: 15,
+          //           offset: const Offset(0, 8),
+          //         ),
+          //       ],
+          //     ),
+          //     child: ClipRRect(
+          //       borderRadius: BorderRadius.circular(20.r),
+          //       child: Image.network(
+          //         section.imageUrl!,
+          //         height: 240.h,
+          //         width: double.infinity,
+          //         fit: BoxFit.cover,
+          //         errorBuilder: (c, e, s) => const SizedBox.shrink(),
+          //       ),
+          //     ),
+          //   ),
+          // ],
           if (section.info != null) ...[
             SizedBox(height: 24.h),
             Container(

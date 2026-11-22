@@ -192,7 +192,7 @@ class _MenuBookWidgetState extends State<MenuBookWidget> {
                     crossAxisCount: 2,
                     crossAxisSpacing: 12.w,
                     mainAxisSpacing: 12.h,
-                    childAspectRatio: 0.72,
+                    childAspectRatio: 0.70,
                   ),
                   itemBuilder: (context, index) {
                     final item = items[index];
@@ -225,11 +225,11 @@ class _MenuBookWidgetState extends State<MenuBookWidget> {
                             ),
                             child: Image.network(
                               fullImageUrl,
-                              height: 120.h,
+                              height: 110.h,
                               width: double.infinity,
                               fit: BoxFit.cover,
                               errorBuilder: (c, e, s) => Container(
-                                height: 120.h,
+                                height: 110.h,
                                 color: Colors.grey[100],
                                 child: const Center(
                                   child: Icon(
@@ -242,7 +242,7 @@ class _MenuBookWidgetState extends State<MenuBookWidget> {
                           ),
                           Expanded(
                             child: Padding(
-                              padding: EdgeInsets.all(10.w),
+                              padding: EdgeInsets.all(8.w),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisAlignment:
@@ -256,33 +256,58 @@ class _MenuBookWidgetState extends State<MenuBookWidget> {
                                     maxLines: 2,
                                     overflow: TextOverflow.ellipsis,
                                   ),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
-                                      TextWidget(
-                                        text:
-                                            item.currencyDiscountedPrice ??
-                                            item.currencyPrice ??
-                                            '',
-                                        color: AppColor.primaryColor,
-                                        fontSize: 13.sp,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                      Container(
-                                        height: 28.r,
-                                        width: 28.r,
-                                        decoration: BoxDecoration(
-                                          color: AppColor.primaryColor,
-                                          shape: BoxShape.circle,
+                                      if (item.currencyPrice != null &&
+                                          item.currencyDiscountedPrice !=
+                                              null &&
+                                          item.currencyPrice !=
+                                              item.currencyDiscountedPrice)
+                                        TextWidget(
+                                          text: item.currencyPrice!,
+                                          color: const Color(0xFF888888),
+                                          fontSize: 11.sp,
+                                          fontWeight: FontWeight.w500,
+                                          decoration:
+                                              TextDecoration.lineThrough,
                                         ),
-                                        child: const Center(
-                                          child: Icon(
-                                            Icons.add,
-                                            color: Colors.white,
-                                            size: 18,
+                                      SizedBox(height: 2.h),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Expanded(
+                                            child: TextWidget(
+                                              text:
+                                                  item.currencyDiscountedPrice ??
+                                                  item.currencyPrice ??
+                                                  '',
+                                              color: AppColor.black100,
+                                              fontSize: 13.sp,
+                                              fontWeight: FontWeight.bold,
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
                                           ),
-                                        ),
+                                          SizedBox(width: 4.w),
+                                          Container(
+                                            height: 28.r,
+                                            width: 28.r,
+                                            decoration: BoxDecoration(
+                                              color: AppColor.primaryColor,
+                                              shape: BoxShape.circle,
+                                            ),
+                                            child: const Center(
+                                              child: Icon(
+                                                Icons.add,
+                                                color: Colors.white,
+                                                size: 18,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ],
                                   ),

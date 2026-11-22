@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:foodnanny/app/features/home/model/home_response_model.dart'
     as home_model;
+import 'package:foodnanny/app/features/home/view/restaurant_menu_screen.dart';
 import 'package:foodnanny/config/theme/app_color.dart';
+import 'package:foodnanny/utils/api_list.dart';
 import 'package:foodnanny/widgets/text_widget.dart';
+import 'package:get/get.dart';
 
 class DiningExperiencesWidget extends StatelessWidget {
   const DiningExperiencesWidget({super.key, required this.section});
@@ -111,7 +114,21 @@ class DiningExperiencesWidget extends StatelessWidget {
                             Divider(color: AppColor.black20, thickness: 1),
                             SizedBox(height: 12.h),
                             GestureDetector(
-                              onTap: () {},
+                              onTap: () {
+                                String targetEndpoint = ApiList.menuRestaurant;
+                                final cardId = (card.id ?? card.menuSection ?? '')
+                                    .toLowerCase();
+                                if (cardId.contains('express')) {
+                                  targetEndpoint = ApiList.menuExpress;
+                                } else if (cardId.contains('cafe')) {
+                                  targetEndpoint = ApiList.menuCafe;
+                                }
+                                Get.to(
+                                  () => RestaurantMenuScreen(
+                                    endpoint: targetEndpoint,
+                                  ),
+                                );
+                              },
                               child: Row(
                                 children: [
                                   TextWidget(
