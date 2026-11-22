@@ -431,4 +431,5 @@ Map<String, String> english = {
   'BY_SIGNIN_UP_YOU_ARE_AGREE_TO_OUR': 'By signing up, you are agree to our',
   'TAKEWAY': 'Takeway',
   'BLOG': 'Blog',
+  'MENU': 'Menu',
 };

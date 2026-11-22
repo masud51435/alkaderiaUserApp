@@ -392,4 +392,5 @@ Map<String, String> arabic = {
   'AD_NOTE': 'أضف ملاحظة (مايونيز إضافي، جبن، إلخ)',
   'MINIMUM_ORDER': 'الحد الأدنى للطلب @amount',
   'BLOG': 'مدونة',
+  'MENU': 'قائمة الطعام',
 };

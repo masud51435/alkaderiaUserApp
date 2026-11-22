@@ -405,4 +405,5 @@ Map<String, String> bangla = {
   'AD_NOTE': 'নোট যোগ করুন (অতিরিক্ত মায়োনেজ, চিজ ইত্যাদি)',
   'MINIMUM_ORDER': 'ন্যূনতম অর্ডার @amount',
   'BLOG': 'ব্লগ',
+  'MENU': 'মেনু',
 };

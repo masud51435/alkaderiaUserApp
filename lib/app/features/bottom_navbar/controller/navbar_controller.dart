@@ -1,5 +1,5 @@
 import 'package:foodnanny/app/features/auth/view/login_screen.dart';
-import 'package:foodnanny/app/features/explore/view/explore_screen.dart';
+import 'package:foodnanny/app/features/menu/view/menu_screen.dart';
 import 'package:foodnanny/app/features/order_history/view/order_history_screen.dart';
 import 'package:foodnanny/app/features/profile/view/profile_screen.dart';
 import 'package:get/get.dart';
@@ -14,7 +14,7 @@ class NavbarController extends GetxController {
 
   final pages = [
     const HomeScreen(),
-    const ExploreScreen(),
+    const MenuScreen(),
     const CartScreen(),
     const OrderHistoryScreen(),
     const ProfileScreen(),

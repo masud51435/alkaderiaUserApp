@@ -20,6 +20,7 @@ class ApiList {
   static const pages = "$baseUrl/api/frontend/page";
   static const setting = "$baseUrl/api/frontend/setting";
   static const home = "$baseUrl/api/frontend/home";
+  static const homeMenu = "$baseUrl/api/frontend/home-menu";
   static const menuRestaurant = "$baseUrl/api/frontend/menu/restaurant";
   static const menuExpress = "$baseUrl/api/frontend/menu/express";
   static const menuCafe = "$baseUrl/api/frontend/menu/cafe";

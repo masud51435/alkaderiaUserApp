@@ -222,7 +222,7 @@ class _BottomNavigationScreenState extends State<BottomNavigationScreen> {
                     },
                     child: NavBarItem(
                       svgIcon: SvgIcon.search,
-                      text: "EXPLORE".tr,
+                      text: "MENU".tr,
                       iconColor: navController.currentPage.value == 1
                           ? AppColor.primaryColor
                           : AppColor.black80,
