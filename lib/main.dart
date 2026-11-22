@@ -59,7 +59,7 @@ class MyApp extends StatelessWidget {
     return ScreenUtilInit(
       designSize: const Size(360, 800),
       child: GetMaterialApp(
-        title: 'Foodnanny - Customer App',
+        title: 'Alkaderia - Customer App',
         debugShowCheckedModeBanner: false,
         translations: Languages(),
         fallbackLocale: langValue,

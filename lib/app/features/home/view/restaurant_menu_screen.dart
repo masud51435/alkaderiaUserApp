@@ -4,6 +4,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import '../../../../config/theme/app_color.dart';
 import '../../../../utils/svg_icon.dart';
+import '../../../../widgets/add_to_cart_dialog.dart';
 import '../../../../widgets/loader/loader.dart';
 import '../../../../widgets/text_widget.dart';
 import '../controller/home_controller.dart';
@@ -375,18 +376,50 @@ class _RestaurantMenuScreenState extends State<RestaurantMenuScreen> {
                                                 ),
                                               ),
                                               SizedBox(width: 4.w),
-                                              Container(
-                                                height: 28.r,
-                                                width: 28.r,
-                                                decoration: BoxDecoration(
-                                                  color: AppColor.primaryColor,
-                                                  shape: BoxShape.circle,
-                                                ),
-                                                child: const Center(
-                                                  child: Icon(
-                                                    Icons.add,
-                                                    color: Colors.white,
-                                                    size: 18,
+                                              GestureDetector(
+                                                onTap: () {
+                                                  final unitPrice =
+                                                      double.tryParse(
+                                                        item.flatDiscountedPrice ??
+                                                            item.flatPrice ??
+                                                            '0',
+                                                      ) ??
+                                                      0.0;
+                                                  final originalPrice =
+                                                      double.tryParse(
+                                                        item.flatPrice ?? '0',
+                                                      ) ??
+                                                      0.0;
+                                                  AddToCartDialog.show(
+                                                    context: context,
+                                                    id: item.id ?? 0,
+                                                    name: item.name ?? '',
+                                                    description:
+                                                        item.description,
+                                                    imageUrl:
+                                                        item.thumb ?? item.cover,
+                                                    unitPrice: unitPrice,
+                                                    originalPrice:
+                                                        originalPrice > unitPrice
+                                                        ? originalPrice
+                                                        : null,
+                                                    restaurantId:
+                                                        item.restaurantId,
+                                                  );
+                                                },
+                                                child: Container(
+                                                  height: 28.r,
+                                                  width: 28.r,
+                                                  decoration: BoxDecoration(
+                                                    color: AppColor.primaryColor,
+                                                    shape: BoxShape.circle,
+                                                  ),
+                                                  child: const Center(
+                                                    child: Icon(
+                                                      Icons.add,
+                                                      color: Colors.white,
+                                                      size: 18,
+                                                    ),
                                                   ),
                                                 ),
                                               ),

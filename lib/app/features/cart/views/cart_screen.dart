@@ -8,6 +8,7 @@ import 'package:foodnanny/app/features/profile/controller/profile_controller.dar
 import 'package:foodnanny/app/features/restaurant_details/controller/restaurant_details_controller.dart';
 import 'package:foodnanny/config/theme/app_color.dart';
 import 'package:foodnanny/main.dart';
+import 'package:foodnanny/utils/api_list.dart';
 import 'package:foodnanny/utils/helper/format_price_with_currency.dart';
 import 'package:foodnanny/widgets/custom_snackbar.dart';
 import 'package:foodnanny/widgets/divider_widget.dart';
@@ -33,11 +34,23 @@ class _CartScreenState extends State<CartScreen> {
 
   double minimumOrder = 0.0;
 
+  String _resolveImageUrl(String? imagePath) {
+    const fallbackImage =
+        'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?q=80&w=1998&auto=format&fit=crop';
+    if (imagePath == null || imagePath.trim().isEmpty) return fallbackImage;
+
+    final uri = Uri.tryParse(imagePath);
+    if (uri != null && uri.hasScheme && uri.host.isNotEmpty) return imagePath;
+
+    return '${ApiList.baseUrl}/${imagePath.replaceFirst(RegExp(r'^/+'), '')}';
+  }
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      minimumOrder = double.parse(box.read("minimumOrder").toString());
+      minimumOrder =
+          double.tryParse(box.read("minimumOrder")?.toString() ?? "") ?? 0.0;
       cartController.isDeliver.value = cartController.deliveryStatus.value == 5
           ? true
           : false;
@@ -72,8 +85,7 @@ class _CartScreenState extends State<CartScreen> {
 
               Obx(
                 () =>
-                    cartController.deliveryStatus.value != 5 &&
-                        cartController.takewayStatus.value != 5
+                    cartController.deliveryStatus.value != 5
                     ? SizedBox.shrink()
                     : Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -87,75 +99,31 @@ class _CartScreenState extends State<CartScreen> {
                             ),
                             child: Row(
                               children: [
-                                if (cartController.deliveryStatus.value == 5)
-                                  GestureDetector(
-                                    onTap: () {
-                                      cartController.isDeliver.value = true;
-                                    },
-                                    child: Container(
-                                      height: 42.h,
-                                      width: 88.w,
-                                      decoration: BoxDecoration(
-                                        color:
-                                            cartController.isDeliver.value ==
-                                                true
-                                            ? AppColor.black100
-                                            : AppColor.background,
-                                        borderRadius: BorderRadius.circular(
-                                          21.r,
-                                        ),
-                                      ),
-                                      child: Padding(
-                                        padding: EdgeInsets.symmetric(
-                                          horizontal: 16.w,
-                                        ),
-                                        child: Center(
-                                          child: NormalText(
-                                            text: "DELIVERY".tr,
-                                            color:
-                                                cartController
-                                                        .isDeliver
-                                                        .value ==
-                                                    true
-                                                ? AppColor.whiteColor
-                                                : AppColor.black100,
-                                            fontSize: 14.sp,
-                                          ),
-                                        ),
-                                      ),
+                                GestureDetector(
+                                  onTap: () {
+                                    cartController.isDeliver.value = true;
+                                  },
+                                  child: Container(
+                                    height: 42.h,
+                                    width: 88.w,
+                                    decoration: BoxDecoration(
+                                      color: AppColor.black100,
+                                      borderRadius: BorderRadius.circular(21.r),
                                     ),
-                                  ),
-                                if (cartController.takewayStatus.value == 5)
-                                  GestureDetector(
-                                    onTap: () {
-                                      cartController.isDeliver.value = false;
-                                    },
-                                    child: Container(
-                                      height: 42.h,
-                                      width: 88.w,
-                                      decoration: BoxDecoration(
-                                        color:
-                                            cartController.isDeliver.value ==
-                                                false
-                                            ? AppColor.black100
-                                            : AppColor.background,
-                                        borderRadius: BorderRadius.circular(
-                                          21.r,
-                                        ),
+                                    child: Padding(
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 16.w,
                                       ),
                                       child: Center(
                                         child: NormalText(
-                                          text: "TAKEAWAY".tr,
+                                          text: "DELIVERY".tr,
+                                          color: AppColor.whiteColor,
                                           fontSize: 14.sp,
-                                          color:
-                                              cartController.isDeliver.value ==
-                                                  false
-                                              ? AppColor.whiteColor
-                                              : AppColor.black100,
                                         ),
                                       ),
                                     ),
                                   ),
+                                ),
                               ],
                             ),
                           ),
@@ -176,15 +144,12 @@ class _CartScreenState extends State<CartScreen> {
                           physics: const NeverScrollableScrollPhysics(),
                           itemCount: cartController.cartItems.length,
                           itemBuilder: (context, index) {
+                            final cartItem = cartController.cartItems[index];
                             cartController.itemsTotalPrice.value =
-                                double.parse(
-                                  cartController
-                                      .cartItems[index]
-                                      .product
-                                      .convertPrice
-                                      .toString(),
-                                ) *
-                                cartController.cartItems[index].quantity.value;
+                                (cartItem.product.convertPrice ??
+                                    cartItem.itemPrice ??
+                                    0.0) *
+                                cartItem.quantity.value;
 
                             return Column(
                               children: [
@@ -193,12 +158,12 @@ class _CartScreenState extends State<CartScreen> {
                                     Column(
                                       children: [
                                         CachedNetworkImage(
-                                          imageUrl:
-                                              cartController
-                                                  .cartItems[index]
-                                                  .product
-                                                  .thumb ??
-                                              "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?q=80&w=1998&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                                          imageUrl: _resolveImageUrl(
+                                            cartController
+                                                .cartItems[index]
+                                                .product
+                                                .thumb,
+                                          ),
                                           imageBuilder:
                                               (context, imageProvider) =>
                                                   Container(
@@ -364,10 +329,11 @@ class _CartScreenState extends State<CartScreen> {
                                 ),
                                 SizedBox(height: 9.h),
 
-                                cartController
-                                        .cartItems[index]
-                                        .extrasText!
-                                        .isEmpty
+                                (cartController
+                                            .cartItems[index]
+                                            .extrasText ??
+                                        '')
+                                    .isEmpty
                                     ? const SizedBox()
                                     : Row(
                                         crossAxisAlignment:
@@ -390,10 +356,11 @@ class _CartScreenState extends State<CartScreen> {
                                           ),
                                         ],
                                       ),
-                                cartController
-                                        .cartItems[index]
-                                        .instructionText!
-                                        .isEmpty
+                                (cartController
+                                            .cartItems[index]
+                                            .instructionText ??
+                                        '')
+                                    .isEmpty
                                     ? const SizedBox()
                                     : Row(
                                         crossAxisAlignment:
@@ -456,12 +423,12 @@ class _CartScreenState extends State<CartScreen> {
                                           Column(
                                             children: [
                                               CachedNetworkImage(
-                                                imageUrl:
-                                                    cartController
-                                                        .addonCartList[index]
-                                                        .addon
-                                                        .thumb ??
-                                                    "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?q=80&w=1998&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                                                imageUrl: _resolveImageUrl(
+                                                  cartController
+                                                      .addonCartList[index]
+                                                      .addon
+                                                      .thumb,
+                                                ),
                                                 imageBuilder:
                                                     (
                                                       context,

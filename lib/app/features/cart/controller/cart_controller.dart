@@ -36,7 +36,7 @@ class CartController extends GetxController {
   int variationId = 0;
   List<Extra> extrasList = [];
 
-  void addToCart({
+  bool addToCart({
     required MainItem product,
     double? itemPrice,
     List<Variation>? variationObject,
@@ -84,12 +84,12 @@ class CartController extends GetxController {
         "MAXIMUM_PURCHASE_QUANTITY_LIMIT_EXCEEDED".tr,
         AppColor.rejectedTextColor,
       );
-      return;
+      return false;
     }
 
     if (existingItem != null) {
       existingItem.quantity.value = finalQty;
-      return;
+      return true;
     }
 
     cartItems.add(
@@ -113,6 +113,7 @@ class CartController extends GetxController {
         total: total,
       ),
     );
+    return true;
   }
 
   void addToCartAddon() {
