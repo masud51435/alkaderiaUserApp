@@ -37,12 +37,36 @@ class _CustomAppBarState extends State<CustomAppBar> {
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 16.w),
           child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               SvgPicture.asset(
                 SvgIcon.logo,
                 height: 28.h,
                 width: 115.w,
                 fit: BoxFit.contain,
+              ),
+              GestureDetector(
+                onTap: () {
+                  // Notification click action
+                },
+                child: Container(
+                  height: 40.r,
+                  width: 40.r,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFFAF7F2),
+                    borderRadius: BorderRadius.circular(12.r),
+                    border: Border.all(
+                      color: AppColor.black20.withValues(alpha: 0.5),
+                    ),
+                  ),
+                  child: Center(
+                    child: Icon(
+                      Icons.notifications_outlined,
+                      color: AppColor.black100,
+                      size: 22.sp,
+                    ),
+                  ),
+                ),
               ),
             ],
           ),
