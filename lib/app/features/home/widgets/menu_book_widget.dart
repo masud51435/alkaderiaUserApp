@@ -52,35 +52,26 @@ class _MenuBookWidgetState extends State<MenuBookWidget> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Eyebrow
-          if (widget.section.eyebrow != null)
+          if (widget.section.eyebrow != null && widget.section.eyebrow!.isNotEmpty)
             TextWidget(
               text: widget.section.eyebrow!.toUpperCase(),
               color: AppColor.primaryColor,
               fontSize: 11.sp,
               fontWeight: FontWeight.w700,
             ),
-          SizedBox(height: 6.h),
           // Title
-          if (widget.section.title != null)
+          if (widget.section.title != null && widget.section.title!.isNotEmpty)
             TextWidget(
               text: widget.section.title!,
               color: AppColor.black100,
-              fontSize: 26.sp,
+              fontSize: 16.sp,
               fontWeight: FontWeight.bold,
-            ),
-          SizedBox(height: 6.h),
-          // Subtitle
-          if (widget.section.subtitle != null)
-            TextWidget(
-              text: widget.section.subtitle!,
-              color: const Color(0xFF666666),
-              fontSize: 14.sp,
             ),
           SizedBox(height: 16.h),
 
           // 3 Chips / Tabs
           SizedBox(
-            height: 44.h,
+            height: 40.h,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
               itemCount: tabs.length,
@@ -95,14 +86,14 @@ class _MenuBookWidgetState extends State<MenuBookWidget> {
                   child: Container(
                     margin: EdgeInsets.only(right: 12.w),
                     padding: EdgeInsets.symmetric(
-                      horizontal: 24.w,
-                      vertical: 10.h,
+                      horizontal: 22.w,
+                      vertical: 8.h,
                     ),
                     decoration: BoxDecoration(
                       color: isSelected
                           ? AppColor.primaryColor
                           : AppColor.whiteColor,
-                      borderRadius: BorderRadius.circular(22.r),
+                      borderRadius: BorderRadius.circular(20.r),
                       border: Border.all(
                         color: isSelected
                             ? AppColor.primaryColor
@@ -124,7 +115,7 @@ class _MenuBookWidgetState extends State<MenuBookWidget> {
                       child: TextWidget(
                         text: tabs[index],
                         color: isSelected ? Colors.white : AppColor.black100,
-                        fontSize: 14.sp,
+                        fontSize: 13.sp,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -133,18 +124,18 @@ class _MenuBookWidgetState extends State<MenuBookWidget> {
               },
             ),
           ),
-          SizedBox(height: 24.h),
+          SizedBox(height: 14.h),
 
           // Selected Section Heading
           TextWidget(
             text: '${tabs[selectedTabIndex]} Menu',
             color: AppColor.primaryColor,
-            fontSize: 20.sp,
+            fontSize: 14.sp,
             fontWeight: FontWeight.bold,
           ),
-          SizedBox(height: 16.h),
+          SizedBox(height: 14.h),
 
-          // Items GridView (2 cards side by side) or Empty State ("Coming Soon")
+          // Horizontal Row Item List Cards
           items.isEmpty
               ? Container(
                   width: double.infinity,
@@ -185,28 +176,31 @@ class _MenuBookWidgetState extends State<MenuBookWidget> {
                     ],
                   ),
                 )
-              : GridView.builder(
+              : ListView.builder(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   itemCount: items.length,
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 12.w,
-                    mainAxisSpacing: 12.h,
-                    childAspectRatio: 0.70,
-                  ),
                   itemBuilder: (context, index) {
                     final item = items[index];
                     final imageUrl = item.thumb ?? item.cover ?? '';
                     final fullImageUrl = imageUrl.startsWith('http')
                         ? imageUrl
-                        : 'https://alkaderia.w3informer.com$imageUrl';
+                        : 'https://hotel.w3informer.com$imageUrl';
+
+                    final unitPrice = double.tryParse(
+                            item.flatDiscountedPrice ?? item.flatPrice ?? '0') ??
+                        0.0;
+                    final originalPrice =
+                        double.tryParse(item.flatPrice ?? '0') ?? 0.0;
+
                     return Container(
+                      margin: EdgeInsets.only(bottom: 14.h),
+                      height: 120.h,
                       decoration: BoxDecoration(
                         color: AppColor.whiteColor,
                         borderRadius: BorderRadius.circular(16.r),
                         border: Border.all(
-                          color: AppColor.black20.withValues(alpha: 0.4),
+                          color: AppColor.black40.withValues(alpha: 0.4),
                         ),
                         boxShadow: [
                           BoxShadow(
@@ -216,21 +210,19 @@ class _MenuBookWidgetState extends State<MenuBookWidget> {
                           ),
                         ],
                       ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // Item Image
-                          ClipRRect(
-                            borderRadius: BorderRadius.vertical(
-                              top: Radius.circular(16.r),
-                            ),
-                            child: Image.network(
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(16.r),
+                        child: Row(
+                          children: [
+                            // Left side: Item Image (flush to top, left, bottom)
+                            Image.network(
                               fullImageUrl,
-                              height: 110.h,
-                              width: double.infinity,
+                              height: double.infinity,
+                              width: 110.w,
                               fit: BoxFit.cover,
                               errorBuilder: (c, e, s) => Container(
-                                height: 110.h,
+                                height: double.infinity,
+                                width: 110.w,
                                 color: Colors.grey[100],
                                 child: const Center(
                                   child: Icon(
@@ -240,105 +232,134 @@ class _MenuBookWidgetState extends State<MenuBookWidget> {
                                 ),
                               ),
                             ),
-                          ),
-                          Expanded(
-                            child: Padding(
-                              padding: EdgeInsets.all(8.w),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  TextWidget(
-                                    text: item.name ?? '',
-                                    color: AppColor.black100,
-                                    fontSize: 13.sp,
-                                    fontWeight: FontWeight.bold,
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      if (item.currencyPrice != null &&
-                                          item.currencyDiscountedPrice !=
-                                              null &&
-                                          item.currencyPrice !=
-                                              item.currencyDiscountedPrice)
+
+                            // Right side: Item Details with padding
+                            Expanded(
+                              child: Padding(
+                                padding: EdgeInsets.all(10.w),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
                                         TextWidget(
-                                          text: item.currencyPrice!,
-                                          color: const Color(0xFF888888),
-                                          fontSize: 11.sp,
-                                          fontWeight: FontWeight.w500,
-                                          decoration:
-                                              TextDecoration.lineThrough,
+                                          text: item.name ?? '',
+                                          color: AppColor.black100,
+                                          fontSize: 13.sp,
+                                          fontWeight: FontWeight.bold,
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
                                         ),
-                                      SizedBox(height: 2.h),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Expanded(
-                                            child: TextWidget(
+                                        if (item.description != null &&
+                                            item.description!.isNotEmpty) ...[
+                                          SizedBox(height: 2.h),
+                                          TextWidget(
+                                            text: item.description!,
+                                            color: const Color(0xFF777777),
+                                            fontSize: 11.sp,
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ],
+                                      ],
+                                    ),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            if (item.currencyPrice != null &&
+                                                item.currencyDiscountedPrice !=
+                                                    null &&
+                                                item.currencyPrice !=
+                                                    item.currencyDiscountedPrice)
+                                              TextWidget(
+                                                text: item.currencyPrice!,
+                                                color: const Color(0xFF888888),
+                                                fontSize: 10.sp,
+                                                fontWeight: FontWeight.w500,
+                                                decoration:
+                                                    TextDecoration.lineThrough,
+                                              ),
+                                            TextWidget(
                                               text:
                                                   item.currencyDiscountedPrice ??
                                                   item.currencyPrice ??
                                                   '',
                                               color: AppColor.black100,
-                                              fontSize: 13.sp,
+                                              fontSize: 14.sp,
                                               fontWeight: FontWeight.bold,
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
                                             ),
-                                          ),
-                                          SizedBox(width: 4.w),
-                                          GestureDetector(
-                                            onTap: () {
-                                              final unitPrice = double.tryParse(
-                                                      item.flatDiscountedPrice ??
-                                                          item.flatPrice ??
-                                                          '0') ??
-                                                  0.0;
-                                              final originalPrice =
-                                                  double.tryParse(
-                                                          item.flatPrice ?? '0') ??
-                                                      0.0;
-                                              AddToCartDialog.show(
-                                                context: context,
-                                                id: item.id ?? 0,
-                                                name: item.name ?? '',
-                                                description: item.description,
-                                                imageUrl: item.thumb ?? item.cover,
-                                                unitPrice: unitPrice,
-                                                originalPrice: originalPrice > unitPrice ? originalPrice : null,
-                                              );
-                                            },
-                                            child: Container(
-                                              height: 28.r,
-                                              width: 28.r,
-                                              decoration: BoxDecoration(
-                                                color: AppColor.primaryColor,
-                                                shape: BoxShape.circle,
-                                              ),
-                                              child: const Center(
-                                                child: Icon(
-                                                  Icons.add,
-                                                  color: Colors.white,
-                                                  size: 18,
+                                          ],
+                                        ),
+                                        GestureDetector(
+                                          onTap: () {
+                                            AddToCartDialog.show(
+                                              context: context,
+                                              id: item.id ?? 0,
+                                              name: item.name ?? '',
+                                              description: item.description,
+                                              imageUrl:
+                                                  item.thumb ?? item.cover,
+                                              unitPrice: unitPrice,
+                                              originalPrice:
+                                                  originalPrice > unitPrice
+                                                      ? originalPrice
+                                                      : null,
+                                            );
+                                          },
+                                          child: Container(
+                                            padding: EdgeInsets.symmetric(
+                                              horizontal: 10.w,
+                                              vertical: 5.h,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              color: AppColor.primaryColor,
+                                              borderRadius:
+                                                  BorderRadius.circular(14.r),
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: AppColor.primaryColor
+                                                      .withValues(alpha: 0.3),
+                                                  blurRadius: 6,
+                                                  offset: const Offset(0, 3),
                                                 ),
-                                              ),
+                                              ],
+                                            ),
+                                            child: Row(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                Icon(
+                                                  Icons.add_rounded,
+                                                  color: Colors.white,
+                                                  size: 14.sp,
+                                                ),
+                                                SizedBox(width: 2.w),
+                                                TextWidget(
+                                                  text: 'ADD',
+                                                  color: Colors.white,
+                                                  fontSize: 10.sp,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ],
                                             ),
                                           ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ],
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     );
                   },
