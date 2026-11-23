@@ -13,74 +13,121 @@ class HomeSectionShimmer extends StatelessWidget {
       child: SingleChildScrollView(
         physics: const NeverScrollableScrollPhysics(),
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Hero Banner Skeleton
+              // 1. Search Bar Skeleton
               Container(
-                height: 240.h,
+                height: 50.h,
                 width: double.infinity,
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(20.r),
+                  borderRadius: BorderRadius.circular(25.r),
+                ),
+              ),
+              SizedBox(height: 20.h),
+
+              // 2. 3 Category Cards Skeleton (Restaurant, Express, Cafe)
+              Row(
+                children: List.generate(
+                  3,
+                  (index) => Expanded(
+                    child: Container(
+                      margin: EdgeInsets.symmetric(horizontal: 4.w),
+                      height: 110.h,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(20.r),
+                      ),
+                    ),
+                  ),
                 ),
               ),
               SizedBox(height: 24.h),
 
-              // Title Skeleton
+              // 3. Signature Dishes Carousel Skeleton
               Container(
-                height: 24.h,
-                width: 180.w,
+                height: 18.h,
+                width: 150.w,
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(8.r),
+                  borderRadius: BorderRadius.circular(6.r),
+                ),
+              ),
+              SizedBox(height: 12.h),
+
+              // Filter chips row
+              Row(
+                children: List.generate(
+                  4,
+                  (index) => Container(
+                    margin: EdgeInsets.only(right: 10.w),
+                    height: 36.h,
+                    width: 70.w,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(18.r),
+                    ),
+                  ),
                 ),
               ),
               SizedBox(height: 16.h),
 
-              // Dining Cards Skeleton (2 cards)
-              Row(
-                children: [
-                  Expanded(
-                    child: Container(
-                      height: 180.h,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(16.r),
-                      ),
+              // Horizontal Cards ListView
+              SizedBox(
+                height: 240.h,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: 3,
+                  itemBuilder: (context, index) => Container(
+                    width: 220.w,
+                    margin: EdgeInsets.only(right: 14.w),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(16.r),
                     ),
                   ),
-                  SizedBox(width: 12.w),
-                  Expanded(
-                    child: Container(
-                      height: 180.h,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(16.r),
-                      ),
-                    ),
-                  ),
-                ],
+                ),
               ),
               SizedBox(height: 24.h),
 
-              // Menu Items Grid Skeleton (4 cards 2x2)
-              GridView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: 4,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 12.w,
-                  mainAxisSpacing: 12.h,
-                  childAspectRatio: 0.75,
+              // 4. Menu Book Vertical List Skeleton
+              Container(
+                height: 18.h,
+                width: 180.w,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(6.r),
                 ),
-                itemBuilder: (context, index) => Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(16.r),
+              ),
+              SizedBox(height: 14.h),
+
+              // Vertical list of horizontal cards
+              Column(
+                children: List.generate(
+                  3,
+                  (index) => Container(
+                    margin: EdgeInsets.only(bottom: 14.h),
+                    height: 120.h,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(16.r),
+                    ),
                   ),
+                ),
+              ),
+              SizedBox(height: 16.h),
+
+              // 5. Restaurant Info Card Skeleton
+              Container(
+                height: 140.h,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16.r),
                 ),
               ),
             ],
