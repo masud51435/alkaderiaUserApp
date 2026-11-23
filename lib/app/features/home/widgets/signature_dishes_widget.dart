@@ -49,38 +49,34 @@ class _SignatureDishesWidgetState extends State<SignatureDishesWidget> {
     }
 
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+      margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Eyebrow
-          if (widget.section.eyebrow != null)
-            Center(
-              child: TextWidget(
-                text: widget.section.eyebrow!.toUpperCase(),
-                color: AppColor.primaryColor,
-                fontSize: 11.sp,
-                fontWeight: FontWeight.w700,
-              ),
+          if (widget.section.eyebrow != null && widget.section.eyebrow!.isNotEmpty)
+            TextWidget(
+              text: widget.section.eyebrow!.toUpperCase(),
+              color: AppColor.primaryColor,
+              fontSize: 11.sp,
+              fontWeight: FontWeight.w700,
             ),
-          SizedBox(height: 6.h),
           // Title
-          if (widget.section.title != null)
-            Center(
-              child: TextWidget(
-                text: widget.section.title!,
-                color: AppColor.black100,
-                fontSize: 26.sp,
-                fontWeight: FontWeight.bold,
-                textAlign: TextAlign.center,
-              ),
+          if (widget.section.title != null && widget.section.title!.isNotEmpty) ...[
+            SizedBox(height: 4.h),
+            TextWidget(
+              text: widget.section.title!,
+              color: AppColor.black100,
+              fontSize: 16.sp,
+              fontWeight: FontWeight.bold,
             ),
-          SizedBox(height: 16.h),
+          ],
+          SizedBox(height: 12.h),
 
           // Filter Chips
           if (filters.isNotEmpty)
             SizedBox(
-              height: 44.h,
+              height: 38.h,
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
                 itemCount: filters.length,
@@ -96,14 +92,14 @@ class _SignatureDishesWidgetState extends State<SignatureDishesWidget> {
                     child: Container(
                       margin: EdgeInsets.only(right: 10.w),
                       padding: EdgeInsets.symmetric(
-                        horizontal: 20.w,
-                        vertical: 10.h,
+                        horizontal: 18.w,
+                        vertical: 8.h,
                       ),
                       decoration: BoxDecoration(
                         color: isSelected
                             ? AppColor.primaryColor
                             : AppColor.whiteColor,
-                        borderRadius: BorderRadius.circular(22.r),
+                        borderRadius: BorderRadius.circular(20.r),
                         border: Border.all(
                           color: isSelected
                               ? AppColor.primaryColor
@@ -125,7 +121,7 @@ class _SignatureDishesWidgetState extends State<SignatureDishesWidget> {
                         child: TextWidget(
                           text: filter.id ?? '',
                           color: isSelected ? Colors.white : AppColor.black100,
-                          fontSize: 14.sp,
+                          fontSize: 13.sp,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -134,9 +130,9 @@ class _SignatureDishesWidgetState extends State<SignatureDishesWidget> {
                 },
               ),
             ),
-          SizedBox(height: 24.h),
+          SizedBox(height: 16.h),
 
-          // Items GridView (2 cards side by side)
+          // Horizontal Scrollable Items (Left to Right)
           displayedItems.isEmpty
               ? Padding(
                   padding: EdgeInsets.symmetric(vertical: 32.h),
@@ -148,163 +144,199 @@ class _SignatureDishesWidgetState extends State<SignatureDishesWidget> {
                     ),
                   ),
                 )
-              : GridView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: displayedItems.length,
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 12.w,
-                    mainAxisSpacing: 16.h,
-                    childAspectRatio: 0.68,
-                  ),
-                  itemBuilder: (context, index) {
-                    final item = displayedItems[index];
-                    final imageUrl = item.thumb ?? item.cover ?? '';
-                    final fullImageUrl = imageUrl.startsWith('http')
-                        ? imageUrl
-                        : 'https://alkaderia.w3informer.com$imageUrl';
-                    return Container(
-                      decoration: BoxDecoration(
-                        color: AppColor.whiteColor,
-                        borderRadius: BorderRadius.circular(16.r),
-                        border: Border.all(
-                          color: AppColor.black20.withValues(alpha: 0.4),
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.03),
-                            blurRadius: 6,
-                            offset: const Offset(0, 3),
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // Item Image
-                          ClipRRect(
-                            borderRadius: BorderRadius.vertical(
-                              top: Radius.circular(16.r),
+              : SizedBox(
+                  height: 240.h,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: displayedItems.length,
+                    itemBuilder: (context, index) {
+                      final item = displayedItems[index];
+                      final imageUrl = item.thumb ?? item.cover ?? '';
+                      final fullImageUrl = imageUrl.startsWith('http')
+                          ? imageUrl
+                          : 'https://hotel.w3informer.com$imageUrl';
+
+                      final unitPrice = double.tryParse(
+                              item.flatDiscountedPrice ?? item.flatPrice ?? '0') ??
+                          0.0;
+                      final originalPrice =
+                          double.tryParse(item.flatPrice ?? '0') ?? 0.0;
+
+                      return GestureDetector(
+                        onTap: () {
+                          AddToCartDialog.show(
+                            context: context,
+                            id: item.id ?? 0,
+                            name: item.name ?? '',
+                            description: item.description,
+                            imageUrl: item.thumb ?? item.cover,
+                            unitPrice: unitPrice,
+                            originalPrice:
+                                originalPrice > unitPrice ? originalPrice : null,
+                          );
+                        },
+                        child: Container(
+                          width: 220.w,
+                          margin: EdgeInsets.only(right: 14.w),
+                          decoration: BoxDecoration(
+                            color: AppColor.whiteColor,
+                            borderRadius: BorderRadius.circular(16.r),
+                            border: Border.all(
+                              color: AppColor.black40.withValues(alpha: 0.4),
                             ),
-                            child: Image.network(
-                              fullImageUrl,
-                              height: 110.h,
-                              width: double.infinity,
-                              fit: BoxFit.cover,
-                              errorBuilder: (c, e, s) => Container(
-                                height: 110.h,
-                                color: Colors.grey[100],
-                                child: const Center(
-                                  child: Icon(
-                                    Icons.fastfood,
-                                    color: Colors.grey,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withValues(alpha: 0.03),
+                                blurRadius: 6,
+                                offset: const Offset(0, 3),
+                              ),
+                            ],
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // Item Image
+                              ClipRRect(
+                                borderRadius: BorderRadius.vertical(
+                                  top: Radius.circular(16.r),
+                                ),
+                                child: Image.network(
+                                  fullImageUrl,
+                                  height: 125.h,
+                                  width: double.infinity,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (c, e, s) => Container(
+                                    height: 125.h,
+                                    color: Colors.grey[100],
+                                    child: const Center(
+                                      child: Icon(
+                                        Icons.fastfood,
+                                        color: Colors.grey,
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                          ),
-                          Expanded(
-                            child: Padding(
-                              padding: EdgeInsets.all(10.w),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  TextWidget(
-                                    text: item.name ?? '',
-                                    color: AppColor.black100,
-                                    fontSize: 14.sp,
-                                    fontWeight: FontWeight.bold,
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  Column(
+                              Expanded(
+                                child: Padding(
+                                  padding: EdgeInsets.all(10.w),
+                                  child: Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
-                                      if (item.currencyPrice != null &&
-                                          item.currencyDiscountedPrice !=
-                                              null &&
-                                          item.currencyPrice !=
-                                              item.currencyDiscountedPrice)
-                                        TextWidget(
-                                          text: item.currencyPrice!,
-                                          color: const Color(0xFF888888),
-                                          fontSize: 12.sp,
-                                          fontWeight: FontWeight.w500,
-                                          decoration:
-                                              TextDecoration.lineThrough,
-                                        ),
-                                      SizedBox(height: 2.h),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
-                                          Expanded(
-                                            child: TextWidget(
-                                              text:
-                                                  item.currencyDiscountedPrice ??
-                                                  item.currencyPrice ??
-                                                  '',
-                                              color: AppColor.black100,
-                                              fontSize: 14.sp,
-                                              fontWeight: FontWeight.bold,
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
-                                            ),
+                                          TextWidget(
+                                            text: item.name ?? '',
+                                            color: AppColor.black100,
+                                            fontSize: 14.sp,
+                                            fontWeight: FontWeight.bold,
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
                                           ),
-                                          SizedBox(width: 4.w),
-                                          GestureDetector(
-                                            onTap: () {
-                                              final unitPrice = double.tryParse(
-                                                      item.flatDiscountedPrice ??
-                                                          item.flatPrice ??
-                                                          '0') ??
-                                                  0.0;
-                                              final originalPrice =
-                                                  double.tryParse(
-                                                          item.flatPrice ?? '0') ??
-                                                      0.0;
-                                              AddToCartDialog.show(
-                                                context: context,
-                                                id: item.id ?? 0,
-                                                name: item.name ?? '',
-                                                description: item.description,
-                                                imageUrl: item.thumb ?? item.cover,
-                                                unitPrice: unitPrice,
-                                                originalPrice: originalPrice > unitPrice ? originalPrice : null,
-                                              );
-                                            },
-                                            child: Container(
-                                              height: 32.r,
-                                              width: 32.r,
-                                              decoration: BoxDecoration(
-                                                color: AppColor.primaryColor,
-                                                shape: BoxShape.circle,
-                                              ),
-                                              child: const Center(
-                                                child: Icon(
-                                                  Icons.add,
-                                                  color: Colors.white,
-                                                  size: 18,
+                                          SizedBox(height: 2.h),
+                                          TextWidget(
+                                            text: item.categoryName ??
+                                                'Signature Dish',
+                                            color: const Color(0xFF777777),
+                                            fontSize: 12.sp,
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ],
+                                      ),
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          if (item.currencyPrice != null &&
+                                              item.currencyDiscountedPrice !=
+                                                  null &&
+                                              item.currencyPrice !=
+                                                  item.currencyDiscountedPrice)
+                                            TextWidget(
+                                              text: item.currencyPrice!,
+                                              color: const Color(0xFF888888),
+                                              fontSize: 11.sp,
+                                              fontWeight: FontWeight.w500,
+                                              decoration:
+                                                  TextDecoration.lineThrough,
+                                            ),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Expanded(
+                                                child: TextWidget(
+                                                  text:
+                                                      item.currencyDiscountedPrice ??
+                                                      item.currencyPrice ??
+                                                      '',
+                                                  color: AppColor.black100,
+                                                  fontSize: 14.sp,
+                                                  fontWeight: FontWeight.bold,
+                                                  maxLines: 1,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
                                                 ),
                                               ),
-                                            ),
+                                              Container(
+                                                padding: EdgeInsets.symmetric(
+                                                  horizontal: 10.w,
+                                                  vertical: 5.h,
+                                                ),
+                                                decoration: BoxDecoration(
+                                                  color: AppColor.primaryColor,
+                                                  borderRadius:
+                                                      BorderRadius.circular(14.r),
+                                                  boxShadow: [
+                                                    BoxShadow(
+                                                      color: AppColor.primaryColor
+                                                          .withValues(
+                                                              alpha: 0.3),
+                                                      blurRadius: 6,
+                                                      offset:
+                                                          const Offset(0, 3),
+                                                    ),
+                                                  ],
+                                                ),
+                                                child: Row(
+                                                  mainAxisSize: MainAxisSize.min,
+                                                  children: [
+                                                    Icon(
+                                                      Icons.add_rounded,
+                                                      color: Colors.white,
+                                                      size: 14.sp,
+                                                    ),
+                                                    SizedBox(width: 2.w),
+                                                    TextWidget(
+                                                      text: 'ADD',
+                                                      color: Colors.white,
+                                                      fontSize: 10.sp,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
                                           ),
                                         ],
                                       ),
                                     ],
                                   ),
-                                ],
+                                ),
                               ),
-                            ),
+                            ],
                           ),
-                        ],
-                      ),
-                    );
-                  },
+                        ),
+                      );
+                    },
+                  ),
                 ),
         ],
       ),
