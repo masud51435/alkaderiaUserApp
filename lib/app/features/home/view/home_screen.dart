@@ -6,12 +6,11 @@ import 'package:foodnanny/app/features/cart/controller/cart_controller.dart';
 import 'package:foodnanny/app/features/home/controller/home_controller.dart';
 import 'package:foodnanny/app/features/home/model/home_response_model.dart'
     as home_model;
-import 'package:foodnanny/app/features/home/widgets/about_section_widget.dart';
-import 'package:foodnanny/app/features/home/widgets/table_booking_widget.dart';
 import 'package:foodnanny/app/features/home/widgets/custom_app_bar.dart';
 import 'package:foodnanny/app/features/home/widgets/dining_experiences_widget.dart';
 import 'package:foodnanny/app/features/home/widgets/hero_section_widget.dart';
 import 'package:foodnanny/app/features/home/widgets/menu_book_widget.dart';
+import 'package:foodnanny/app/features/home/widgets/restaurant_info_widget.dart';
 import 'package:foodnanny/app/features/home/widgets/signature_dishes_widget.dart';
 import 'package:foodnanny/app/features/order_history/controller/order_history_controller.dart';
 import 'package:foodnanny/config/theme/app_color.dart';
@@ -89,13 +88,13 @@ class _HomeScreenState extends State<HomeScreen> {
                       if (homeController.homeLoader.value) {
                         return const HomeSectionShimmer();
                       }
-                      final sections = homeController
+                      final rawSections = homeController
                               .homeResponseData
                               .value
                               .data
                               ?.sections ??
                           [];
-                      if (sections.isEmpty) {
+                      if (rawSections.isEmpty) {
                         return Padding(
                           padding: EdgeInsets.symmetric(vertical: 80.h),
                           child: Center(
@@ -107,16 +106,42 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         );
                       }
-                      return ListView.builder(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: sections.length,
-                        itemBuilder: (context, index) {
-                          return _buildSection(sections[index]);
-                        },
+
+                      const desiredOrder = [
+                        'hero',
+                        'dining_experiences',
+                        'signature_dishes',
+                        'menu_book',
+                        'about',
+                        'booking',
+                      ];
+
+                      final sections = List<home_model.Section>.from(rawSections)
+                        ..sort((a, b) {
+                          final posA = desiredOrder.indexOf(a.id ?? '');
+                          final posB = desiredOrder.indexOf(b.id ?? '');
+                          return (posA == -1 ? 99 : posA)
+                              .compareTo(posB == -1 ? 99 : posB);
+                        });
+                      final heroSection = rawSections.firstWhereOrNull((s) => s.id == 'hero');
+
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ListView.builder(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: sections.length,
+                            itemBuilder: (context, index) {
+                              return _buildSection(sections[index]);
+                            },
+                          ),
+                          if (heroSection != null)
+                            RestaurantInfoWidget(section: heroSection),
+                        ],
                       );
                     }),
-                    SizedBox(height: 80.h),
+                    SizedBox(height: 30.h),
                   ],
                 ),
               ),
@@ -144,14 +169,12 @@ class _HomeScreenState extends State<HomeScreen> {
         return HeroSectionWidget(section: section);
       case 'dining_experiences':
         return DiningExperiencesWidget(section: section);
-      case 'menu_book':
-        return MenuBookWidget(section: section);
       case 'signature_dishes':
         return SignatureDishesWidget(section: section);
+      case 'menu_book':
+        return MenuBookWidget(section: section);
       case 'about':
-        return AboutSectionWidget(section: section);
       case 'booking':
-        return BookingSectionWidget(section: section);
       case 'app_download':
         return const SizedBox.shrink();
       default:
